@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="SV_EmailQueue" title="SV: Email Queuing Enhancements" version_string="1.0.0" version_id="1" url="" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners/>
+  <cron>
+    <entry entry_id="SV_FailedMailQueue" cron_class="SV_EmailQueue_CronEntry_FailedMailQueue" cron_method="run" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["0","20","30","40","50"]}]]></entry>
+  </cron>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <option option_id="sv_emailqueue_backoff" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="emailOptions" display_order="1010"/>
+    </option>
+    <option option_id="sv_emailqueue_batchsize" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>20</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="emailOptions" display_order="1000"/>
+    </option>
+    <option option_id="sv_emailqueue_failures_to_error" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="emailOptions" display_order="1030"/>
+    </option>
+    <option option_id="sv_emailqueue_failures_to_warn" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="emailOptions" display_order="1020"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="cron_entry_SV_FailedMailQueue" version_id="1" version_string="1.0.0"><![CDATA[Reprocess the failed mail queue.]]></phrase>
+    <phrase title="option_sv_emailqueue_backoff" version_id="1" version_string="1.0.0"><![CDATA[On Error, back off all sending.]]></phrase>
+    <phrase title="option_sv_emailqueue_backoff_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of minutes to wait between after an attempt errors. 
+Set to zero to disable.]]></phrase>
+    <phrase title="option_sv_emailqueue_batchsize" version_id="1" version_string="1.0.0"><![CDATA[Batch Size to process]]></phrase>
+    <phrase title="option_sv_emailqueue_batchsize_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of emails to prefetch from the queue during queue processing.]]></phrase>
+    <phrase title="option_sv_emailqueue_failures_to_error" version_id="1" version_string="1.0.0"><![CDATA[Failures before abandoning sending]]></phrase>
+    <phrase title="option_sv_emailqueue_failures_to_error_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of failures before an error is logged, and the email is discarded.
+Set to zero to disable.]]></phrase>
+    <phrase title="option_sv_emailqueue_failures_to_warn" version_id="1" version_string="1.0.0"><![CDATA[Failures before logging.]]></phrase>
+    <phrase title="option_sv_emailqueue_failures_to_warn_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of failures before an error is logged, but the email is not discarded.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications/>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
