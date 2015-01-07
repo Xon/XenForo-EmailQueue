@@ -35,7 +35,7 @@ class SV_EmailQueue_Listener
         XenForo_Db::commit($db);
     }
 
-    public static function loadClassModel($class, &$extend)
+    public static function load_class($class, &$extend)
     {
         switch ($class)
         {
