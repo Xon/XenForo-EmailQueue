@@ -16,7 +16,11 @@ class SV_EmailQueue_XenForo_ControllerAdmin_User extends XFCP_SV_EmailQueue_XenF
 
 	protected function _sendEmail(array $user, array $email, Zend_Mail_Transport_Abstract $transport)
 	{
-        // use a tiny custom Mail transport which just posts to XenForo_Mail::insertMailQueue
-        return parent::_sendEmail($user, $email, $this->_getDeferMailTransport());
+        if (XenForo_Application::get('config')->enableMailQueue)
+        {
+            // use a tiny custom Mail transport which just posts to XenForo_Mail::insertMailQueue
+            $transport = $this->_getDeferMailTransport();
+        }
+        return parent::_sendEmail($user, $email, $transport);
     }
 }
