@@ -9,7 +9,8 @@ class SV_EmailQueue_Listener
         $db = XenForo_Application::getDb();
 
         XenForo_Db::beginTransaction($db);
-        $db->query("CREATE TABLE `xf_mail_queue_failed` (
+        
+        $db->query("CREATE TABLE IF NOT EXISTS `xf_mail_queue_failed` (
   `mail_id` varbinary(20) NOT NULL,
   `mail_data` mediumblob NOT NULL,
   `queue_date` int unsigned NOT NULL,
@@ -22,6 +23,7 @@ class SV_EmailQueue_Listener
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
         XenForo_Db::commit($db);
+
     }
 
     public static function uninstall()
