@@ -43,6 +43,7 @@ class SV_EmailQueue_Listener
         {
             case 'XenForo_Mail':
             case 'XenForo_Model_MailQueue':
+            case 'XenForo_ControllerAdmin_User':
                 $extend[] = self::AddonNameSpace.'_'.$class;
                 break;
         }
