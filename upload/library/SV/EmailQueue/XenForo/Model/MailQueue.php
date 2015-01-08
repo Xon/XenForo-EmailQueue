@@ -1,6 +1,6 @@
 <?php
 
-class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Model_MailQueue
+class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_Model_MailQueue
 {
     public function RetryFailedQueue()
     {
@@ -47,14 +47,14 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
 	{
         $this->_getDb()->query('
             INSERT INTO xf_mail_queue_failed
-                (mail_id, mail_data, queue_date, dispatched, fail_count, last_fail_date)
-            VALUES (?, ?, ?, ?, ?, ?)
+                (mail_id, mail_data, queue_date, fail_count, last_fail_date)
+            VALUES (?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 dispatched = 0,
                 fail_count = fail_count + 1,
                 last_fail_date = VALUES(last_fail_date)
         ', array(
-            $mail_id, $rawmailObj, $queue_date, 0, 1, XenForo_Application::$time
+            $mail_id, $rawmailObj, $queue_date, 1, XenForo_Application::$time
         ));
 
 		return true;
@@ -76,8 +76,11 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
 
 	public function DeleteFailedMail($mail_id)
 	{
-    // TODO TEST
-        return db->delete('xf_mail_queue_failed', 'mail_id = ' . $db->quote($id));
+        $this->_getDb()->query('
+            delete 
+            from xf_mail_queue_failed 
+            where mail_id = ?
+        ', $mail_id);
     }
 
 	public function GetLastFailedTimeStamp()
@@ -85,7 +88,7 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
         return $this->_getDb()->fetchOne('
             SELECT max(last_fail_date)
             FROM xf_mail_queue_failed
-        '));
+        ');
     }
 
 	public function runMailQueue($targetRunTime)
@@ -112,7 +115,7 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
 					continue;
 				}
 
-                $mail_id = $this->getFailedItemKey($rawmailObj, $queue_date);
+                $mail_id = $this->getFailedItemKey($record['mail_data'], $record['queue_date']);
                 $email_send = false;
 
                 $thisTransport = XenForo_Mail::getFinalTransportForMail($mailObj, $transport);
@@ -124,19 +127,7 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
 				}
 				catch (Exception $e)
 				{
-                    // queue the failed email
-                    $this->insertFailedMailQueue($mail_id, $record['mail_data'], $record['queue_date']);
-                    $toEmails = implode(', ', $mailObj->getRecipients());
-                    $failed_count = $this->GetMailFailedCount($mail_id);
-                    if ($options->sv_emailqueue_failures_to_error && $failed_count > $options->sv_emailqueue_failures_to_error)
-                    {
-                        $this->DeleteFailedMail($mail_id);
-                        XenForo_Error::logException($e, false, "Abandoning, Email to $toEmails failed: ");
-                    }
-                    else if ($options->sv_emailqueue_failures_to_warn && $failed_count > $options->sv_emailqueue_failures_to_warn)
-                    {
-                        XenForo_Error::logException($e, false, "Queued, Email to $toEmails failed: ");
-                    }
+                    $this->OnDeliveryFailure($e, $mailObj, $mail_id, $record);
 
 					// pipe may be messed up now, so let's be sure to get another one
 					unset($transport);
@@ -145,7 +136,7 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
                 // cleanup any failed email
                 if ($email_send)
                 {
-                    $this->DeleteFailedMail($mail_id);
+                   $this->OnDeliverySuccess($mailObj, $mail_id, $record);
                 }
 
 				if ($targetRunTime && microtime(true) - $s > $targetRunTime)
@@ -159,4 +150,27 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends SV_CanWarnStaff_XenForo_Mode
 
 		return $this->hasMailQueue();
 	}
+    
+    function OnDeliveryFailure($e, $mailObj, $mail_id, $record )
+    {
+        // queue the failed email
+        $this->insertFailedMailQueue($mail_id, $record['mail_data'], $record['queue_date']);
+        $toEmails = implode(', ', $mailObj->getRecipients());
+        $failed_count = $this->GetMailFailedCount($mail_id);
+        $options = XenForo_Application::get('options');
+        if ($options->sv_emailqueue_failures_to_error && $failed_count >= $options->sv_emailqueue_failures_to_error)
+        {
+            $this->DeleteFailedMail($mail_id);
+            XenForo_Error::logException($e, false, "Abandoning, Email to $toEmails failed: ");
+        }
+        else if ($options->sv_emailqueue_failures_to_warn && $failed_count >= $options->sv_emailqueue_failures_to_warn)
+        {
+            XenForo_Error::logException($e, false, "Queued, Email to $toEmails failed: ");
+        }
+    }
+    
+    function OnDeliverySuccess($mailObj, $mail_id, $record )
+    {
+        $this->DeleteFailedMail($mail_id);
+    }    
 }

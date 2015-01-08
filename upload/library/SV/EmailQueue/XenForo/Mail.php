@@ -1,6 +1,6 @@
 <?php
 
-class SV_EmailQueue_XenForo_Mail extends SV_CanWarnStaff_XenForo_Mail
+class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
 {
     public function sendMail(Zend_Mail $mailObj)
     {

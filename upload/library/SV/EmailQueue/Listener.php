@@ -16,7 +16,7 @@ class SV_EmailQueue_Listener
   `queue_date` int unsigned NOT NULL,
   `fail_count` int unsigned NOT NULL,
   `last_fail_date` int unsigned NOT NULL,
-  `dispatched` bit NOT NULL,
+  `dispatched` bit NOT NULL default 0,
   PRIMARY KEY (`mail_id`),
   KEY `dispatched` (`dispatched`),
   KEY `last_fail_date` (`last_fail_date`)
