@@ -2,7 +2,7 @@
 
 class SV_EmailQueue_Transport_Defer extends Zend_Mail_Transport_Abstract
 {
-    static $_mailQueue = null;
+    protected $_mailQueue = null;
 
     public function send(Zend_Mail $mail)
     {
@@ -16,10 +16,10 @@ class SV_EmailQueue_Transport_Defer extends Zend_Mail_Transport_Abstract
 
     protected function _getMailQueueModel()
     {
-        if (self::$_mailQueue === null)
+        if ($this->_mailQueue === null)
         {
-            self::$_mailQueue = XenForo_Model::create("XenForo_Model_MailQueue");
+            $this->_mailQueue = XenForo_Model::create("XenForo_Model_MailQueue");
         }
-        return self::$_mailQueue;
+        return $this->_mailQueue;
     }
 }

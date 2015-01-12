@@ -18,14 +18,14 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
         }
     }
 
-    static $_mailQueue = null;
+    protected $_mailQueue = null;
 
     protected function _getMailQueueModel()
     {
-        if (self::$_mailQueue === null)
+        if ($this->_mailQueue === null)
         {
-            self::$_mailQueue = XenForo_Model::create("XenForo_Model_MailQueue");
+            $this->_mailQueue = XenForo_Model::create("XenForo_Model_MailQueue");
         }
-        return self::$_mailQueue;
+        return $this->_mailQueue;
     }
 }
