@@ -8,14 +8,23 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
         {
             return true;
         }
-        if (XenForo_Application::get('config')->enableMailQueue)
+
+        if (XenForo_Application::getOptions()->sv_emailqueue_force)
         {
             return $this->_getMailQueueModel()->insertMailQueue($mailObj);
         }
-        else
+
+        if (parent::sendMail($mailObj))
         {
-            return parent::sendMail($mailObj);
+            return true;
         }
+
+        if (XenForo_Application::get('config')->enableMailQueue)
+        {
+            return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
+        }
+
+        return false;
     }
 
     protected $_mailQueue = null;
