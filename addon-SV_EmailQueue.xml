@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.1" version_id="100001" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.2" version_id="100002" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -17,12 +17,6 @@
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
-    <option option_id="sv_emailqueue_force" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>0</default_value>
-      <edit_format_params></edit_format_params>
-      <sub_options></sub_options>
-      <relation group_id="emailOptions" display_order="910"/>
-    </option>
     <option option_id="sv_emailqueue_backoff" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -47,6 +41,12 @@
       <sub_options></sub_options>
       <relation group_id="emailOptions" display_order="1020"/>
     </option>
+    <option option_id="sv_emailqueue_force" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="emailOptions" display_order="910"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -66,6 +66,8 @@ Set to zero to disable, and attempt to try again as soon as possible]]></phrase>
 Set to zero to disable.]]></phrase>
     <phrase title="option_sv_emailqueue_failures_to_warn" version_id="1" version_string="1.0.0"><![CDATA[Failures before logging.]]></phrase>
     <phrase title="option_sv_emailqueue_failures_to_warn_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of failures before an error is logged, but the email is not discarded.]]></phrase>
+    <phrase title="option_sv_emailqueue_force" version_id="100001" version_string="1.0.1"><![CDATA[Queue all email]]></phrase>
+    <phrase title="option_sv_emailqueue_force_explain" version_id="100001" version_string="1.0.1"><![CDATA[Forces all email to be queued, if disabled only failed email is queued for resending.]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
