@@ -39,13 +39,6 @@ class SV_EmailQueue_Listener
 
     public static function load_class($class, &$extend)
     {
-        switch ($class)
-        {
-            case 'XenForo_Mail':
-            case 'XenForo_Model_MailQueue':
-            case 'XenForo_ControllerAdmin_User':
-                $extend[] = self::AddonNameSpace.'_'.$class;
-                break;
-        }
+        $extend[] = self::AddonNameSpace.'_'.$class;
     }
 }
