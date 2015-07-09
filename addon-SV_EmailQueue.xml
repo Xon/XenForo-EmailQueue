@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.2" version_id="100002" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.3" version_id="100003" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
