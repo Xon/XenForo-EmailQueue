@@ -3,7 +3,7 @@
 class SV_EmailQueue_XenForo_ControllerAdmin_User extends XFCP_SV_EmailQueue_XenForo_ControllerAdmin_User
 {
     protected $_deferMailTransport = null;
-    
+
     protected function _getDeferMailTransport()
     {
         if($this->_deferMailTransport === null)
@@ -14,8 +14,8 @@ class SV_EmailQueue_XenForo_ControllerAdmin_User extends XFCP_SV_EmailQueue_XenF
         return $this->_deferMailTransport;
     }
 
-	protected function _sendEmail(array $user, array $email, Zend_Mail_Transport_Abstract $transport)
-	{
+    protected function _sendEmail(array $user, array $email, Zend_Mail_Transport_Abstract $transport)
+    {
         if (XenForo_Application::get('config')->enableMailQueue)
         {
             // use a tiny custom Mail transport which just posts to XenForo_Mail::insertMailQueue

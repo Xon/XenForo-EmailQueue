@@ -7,7 +7,9 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
         // do not attempt to process email if email is disabled.
         $config = XenForo_Application::get('config');
         if (!$config->enableMail || !$config->enableMailQueue)
+        {
             return;
+        }
 
         $latest_failed = $this->GetLastFailedTimeStamp();
         if ($latest_failed)
@@ -43,8 +45,8 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
         }
     }
 
-	public function insertFailedMailQueue($mail_id, $rawmailObj, $queue_date)
-	{
+    public function insertFailedMailQueue($mail_id, $rawmailObj, $queue_date)
+    {
         $this->_getDb()->query('
             INSERT INTO xf_mail_queue_failed
                 (mail_id, mail_data, queue_date, fail_count, last_fail_date)
@@ -57,16 +59,16 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
             $mail_id, $rawmailObj, $queue_date, 1, XenForo_Application::$time
         ));
 
-		return true;
-	}
+        return true;
+    }
 
     public function getFailedItemKey($rawmailObj, $queue_date)
     {
         return sha1($queue_date . $rawmailObj, true);
     }
 
-	public function GetMailFailedCount($mail_id)
-	{
+    public function GetMailFailedCount($mail_id)
+    {
         return $this->_getDb()->fetchOne('
             SELECT fail_count
             FROM xf_mail_queue_failed
@@ -74,88 +76,90 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
         ', $mail_id);
     }
 
-	public function DeleteFailedMail($mail_id)
-	{
+    public function DeleteFailedMail($mail_id)
+    {
         $this->_getDb()->query('
-            delete 
-            from xf_mail_queue_failed 
+            delete
+            from xf_mail_queue_failed
             where mail_id = ?
         ', $mail_id);
     }
 
-	public function GetLastFailedTimeStamp()
-	{
+    public function GetLastFailedTimeStamp()
+    {
         return $this->_getDb()->fetchOne('
             SELECT max(last_fail_date)
             FROM xf_mail_queue_failed
         ');
     }
 
-	public function runMailQueue($targetRunTime)
-	{
+    public function runMailQueue($targetRunTime)
+    {
         // do not attempt to process email if email is disabled.
         $config = XenForo_Application::get('config');
         if (!$config->enableMail)
+        {
             return $this->hasMailQueue();
+        }
 
-		$s = microtime(true);
-		$transport = XenForo_Mail::getTransport();
-		$db = $this->_getDb();
+        $s = microtime(true);
+        $transport = XenForo_Mail::getTransport();
+        $db = $this->_getDb();
         $options = XenForo_Application::get('options');
-		do
-		{
-			$queue = $this->getMailQueue($targetRunTime ? $options->sv_emailqueue_batchsize : 0);
+        do
+        {
+            $queue = $this->getMailQueue($targetRunTime ? $options->sv_emailqueue_batchsize : 0);
 
-			foreach ($queue AS $id => $record)
-			{
-				if (!$db->delete('xf_mail_queue', 'mail_queue_id = ' . $db->quote($id)))
-				{
-					// already been deleted - run elsewhere
-					continue;
-				}
+            foreach ($queue AS $id => $record)
+            {
+                if (!$db->delete('xf_mail_queue', 'mail_queue_id = ' . $db->quote($id)))
+                {
+                    // already been deleted - run elsewhere
+                    continue;
+                }
 
-				$mailObj = @unserialize($record['mail_data']);
-				if (!($mailObj instanceof Zend_Mail))
-				{
-					continue;
-				}
+                $mailObj = @unserialize($record['mail_data']);
+                if (!($mailObj instanceof Zend_Mail))
+                {
+                    continue;
+                }
 
                 $mail_id = $this->getFailedItemKey($record['mail_data'], $record['queue_date']);
                 $email_send = false;
 
                 $thisTransport = XenForo_Mail::getFinalTransportForMail($mailObj, $transport);
 
-				try
-				{
-					$mailObj->send($thisTransport);
+                try
+                {
+                    $mailObj->send($thisTransport);
                     $email_send = true;
-				}
-				catch (Exception $e)
-				{
+                }
+                catch (Exception $e)
+                {
                     $this->OnDeliveryFailure($e, $mailObj, $mail_id, $record);
 
-					// pipe may be messed up now, so let's be sure to get another one
-					unset($transport);
-					$transport = XenForo_Mail::getTransport();
-				}
+                    // pipe may be messed up now, so let's be sure to get another one
+                    unset($transport);
+                    $transport = XenForo_Mail::getTransport();
+                }
                 // cleanup any failed email
                 if ($email_send)
                 {
                    $this->OnDeliverySuccess($mailObj, $mail_id, $record);
                 }
 
-				if ($targetRunTime && microtime(true) - $s > $targetRunTime)
-				{
-					$queue = false;
-					break;
-				}
-			}
-		}
-		while ($queue);
+                if ($targetRunTime && microtime(true) - $s > $targetRunTime)
+                {
+                    $queue = false;
+                    break;
+                }
+            }
+        }
+        while ($queue);
 
-		return $this->hasMailQueue();
-	}
-    
+        return $this->hasMailQueue();
+    }
+
     function OnDeliveryFailure($e, $mailObj, $mail_id, $record )
     {
         // queue the failed email
@@ -173,9 +177,9 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
             XenForo_Error::logException($e, false, "Queued, Email to $toEmails failed: ");
         }
     }
-    
+
     function OnDeliverySuccess($mailObj, $mail_id, $record )
     {
         $this->DeleteFailedMail($mail_id);
-    }    
+    }
 }

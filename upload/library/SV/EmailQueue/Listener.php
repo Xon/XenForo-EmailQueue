@@ -9,7 +9,7 @@ class SV_EmailQueue_Listener
         $db = XenForo_Application::getDb();
 
         XenForo_Db::beginTransaction($db);
-        
+
         $db->query("CREATE TABLE IF NOT EXISTS `xf_mail_queue_failed` (
   `mail_id` varbinary(20) NOT NULL,
   `mail_data` mediumblob NOT NULL,
