@@ -93,6 +93,11 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
 
 	public function runMailQueue($targetRunTime)
 	{
+        // do not attempt to process email if email is disabled.
+        $config = XenForo_Application::get('config');
+        if (!$config->enableMail)
+            return $this->hasMailQueue();
+
 		$s = microtime(true);
 		$transport = XenForo_Mail::getTransport();
 		$db = $this->_getDb();
