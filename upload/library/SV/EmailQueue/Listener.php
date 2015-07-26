@@ -20,7 +20,7 @@ class SV_EmailQueue_Listener
   PRIMARY KEY (`mail_id`),
   KEY `dispatched` (`dispatched`),
   KEY `last_fail_date` (`last_fail_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci");
 
         XenForo_Db::commit($db);
 
