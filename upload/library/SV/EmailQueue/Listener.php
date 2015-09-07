@@ -2,13 +2,11 @@
 
 class SV_EmailQueue_Listener
 {
-    const AddonNameSpace = 'SV_EmailQueue';
+    const AddonNameSpace = 'SV_EmailQueue_';
 
     public static function install($installedAddon, array $addonData, SimpleXMLElement $xml)
     {
         $db = XenForo_Application::getDb();
-
-        XenForo_Db::beginTransaction($db);
 
         $db->query("CREATE TABLE IF NOT EXISTS `xf_mail_queue_failed` (
   `mail_id` varbinary(20) NOT NULL,
@@ -22,8 +20,6 @@ class SV_EmailQueue_Listener
   KEY `last_fail_date` (`last_fail_date`)
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci");
 
-        XenForo_Db::commit($db);
-
     }
 
     public static function uninstall()
@@ -32,13 +28,14 @@ class SV_EmailQueue_Listener
         XenForo_Db::beginTransaction($db);
 
         $db->query("insert into xf_mail_queue (`mail_data`,`queue_date`) select `mail_data`,`queue_date` from xf_mail_queue_failed");
-        $db->query("drop table xf_mail_queue_failed");
 
         XenForo_Db::commit($db);
+
+        $db->query("drop table if exists xf_mail_queue_failed");
     }
 
     public static function load_class($class, &$extend)
     {
-        $extend[] = self::AddonNameSpace.'_'.$class;
+        $extend[] = self::AddonNameSpace.$class;
     }
 }
