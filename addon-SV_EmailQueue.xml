@@ -10,6 +10,7 @@
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Mail" description="XenForo_Mail"/>
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Model_MailQueue" description="XenForo_Model_MailQueue"/>
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_User" description="XenForo_ControllerAdmin_User"/>
+    <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Deferred_UserEmail" description="XenForo_Deferred_UserEmail"/>    
   </code_event_listeners>
   <cron>
     <entry entry_id="SV_FailedMailQueue" cron_class="SV_EmailQueue_CronEntry_FailedMailQueue" cron_method="run" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["5","15","25","35","45","55"]}]]></entry>
