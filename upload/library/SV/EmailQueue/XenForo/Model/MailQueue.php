@@ -45,7 +45,22 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
         }
     }
 
-    public function insertFailedMailQueue($mail_id, $rawmailObj, $queue_date)
+    public function insertFailedMailQueue(Zend_Mail $mailObj)
+    {
+        $toEmails = implode(', ', $mailObj->getRecipients());
+        try
+        {
+            $rawmailObj = serialize($mailObj);
+            $mail_id = $this->getFailedItemKey($rawmailObj, XenForo_Application::$time);
+            $this->_insertFailedMailQueue($mail_id, $rawmailObj, XenForo_Application::$time);
+        }
+        catch(Exception $e)
+        {
+            XenForo_Error::logException($e, false, "Exception when attempting to queue failed email for Email to $toEmails: ");
+        }
+    }
+
+    protected function _insertFailedMailQueue($mail_id, $rawmailObj, $queue_date)
     {
         $this->_getDb()->query('
             INSERT INTO xf_mail_queue_failed
@@ -163,7 +178,7 @@ class SV_EmailQueue_XenForo_Model_MailQueue extends XFCP_SV_EmailQueue_XenForo_M
     function OnDeliveryFailure($e, $mailObj, $mail_id, $record )
     {
         // queue the failed email
-        $this->insertFailedMailQueue($mail_id, $record['mail_data'], $record['queue_date']);
+        $this->_insertFailedMailQueue($mail_id, $record['mail_data'], $record['queue_date']);
         $toEmails = implode(', ', $mailObj->getRecipients());
         $failed_count = $this->GetMailFailedCount($mail_id);
         $options = XenForo_Application::get('options');

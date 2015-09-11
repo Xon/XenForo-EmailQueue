@@ -19,10 +19,7 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
             return true;
         }
 
-        if (XenForo_Application::get('config')->enableMailQueue)
-        {
-            return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
-        }
+        return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
 
         return false;
     }
