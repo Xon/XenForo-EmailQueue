@@ -20,7 +20,7 @@ class SV_EmailQueue_Transport_FailedDefer extends Zend_Mail_Transport_Abstract
         {
             $toEmails = implode(', ', $mail->getRecipients());
             XenForo_Error::logException($e, false, "Email to $toEmails failed: ");
-            $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
+            $this->_getMailQueueModel()->insertFailedMailQueue($mail);
         }
     }
 

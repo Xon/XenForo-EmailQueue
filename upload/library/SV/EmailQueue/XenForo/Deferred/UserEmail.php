@@ -10,7 +10,7 @@ class SV_EmailQueue_XenForo_Deferred_UserEmail extends XFCP_SV_EmailQueue_XenFor
         {
             $class = XenForo_Application::resolveDynamicClass("SV_EmailQueue_Transport_FailedDefer");
             $this->_deferMailTransport = new $class();
-            $this->setWrappedTransport($transport);
+            $this->_deferMailTransport->setWrappedTransport($transport);
         }
         return $this->_deferMailTransport;
     }
