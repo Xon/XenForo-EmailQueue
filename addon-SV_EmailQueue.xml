@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.4a" version_id="100041" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.0.5" version_id="1000500" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Listener" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
-  <admin_templates/>
+  <admin_templates>
+    <template title="sv_emailqueue_mailtemplates"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
+<ul class="FieldChoices">
+<xen:foreach loop="$preparedOption.option_value" key="$choice" value="$value">
+<li>
+<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][{$choice}]" value="{$value}" {xen:checked '1'} /> {$extra.templates.{$choice}.title}
+</li>
+</xen:foreach>
+<li>
+<xen:select label="" name="{$fieldPrefix}[{$preparedOption.option_id}][]" value="1"
+hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
+    <xen:options source="$formatParams" />
+</xen:select>
+</li>
+</ul>
+<input type="button" value="{xen:phrase add_additional_choice}" class="button smallButton FieldAdder" data-source="ul.FieldChoices li" />
+
+<p class="explain">{xen:raw $preparedOption.explain}</p>
+{xen:raw $editLink}
+</xen:controlunit>]]></template>
+  </admin_templates>
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Mail" description="XenForo_Mail"/>
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Model_MailQueue" description="XenForo_Model_MailQueue"/>
     <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_User" description="XenForo_ControllerAdmin_User"/>
-    <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Deferred_UserEmail" description="XenForo_Deferred_UserEmail"/>    
+    <listener event_id="load_class" execute_order="3944" callback_class="SV_EmailQueue_Listener" callback_method="load_class" active="1" hint="XenForo_Deferred_UserEmail" description="XenForo_Deferred_UserEmail"/>
   </code_event_listeners>
   <cron>
     <entry entry_id="SV_FailedMailQueue" cron_class="SV_EmailQueue_CronEntry_FailedMailQueue" cron_method="run" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["5","15","25","35","45","55"]}]]></entry>
@@ -29,6 +49,12 @@
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="emailOptions" display_order="1000"/>
+    </option>
+    <option option_id="sv_emailqueue_exclude" edit_format="callback" data_type="array" can_backup="1" validation_class="SV_EmailQueue_Option_EmailTemplates" validation_method="verifyOption">
+      <default_value>a:0:{}</default_value>
+      <edit_format_params>SV_EmailQueue_Option_EmailTemplates::renderOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="emailOptions" display_order="920"/>
     </option>
     <option option_id="sv_emailqueue_failures_to_error" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
       <default_value>0</default_value>
@@ -62,6 +88,8 @@ Increment size is effectively gated to the cron job run time which, by default, 
 Set to zero to disable, and attempt to try again as soon as possible]]></phrase>
     <phrase title="option_sv_emailqueue_batchsize" version_id="1" version_string="1.0.0"><![CDATA[Batch Size to process]]></phrase>
     <phrase title="option_sv_emailqueue_batchsize_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of emails to prefetch from the queue during queue processing.]]></phrase>
+    <phrase title="option_sv_emailqueue_exclude" version_id="1000500" version_string="1.0.5"><![CDATA[Email Tempates to Exclude]]></phrase>
+    <phrase title="option_sv_emailqueue_exclude_explain" version_id="1000500" version_string="1.0.5"><![CDATA[A list of email templates to exclude from forced queuing.]]></phrase>
     <phrase title="option_sv_emailqueue_failures_to_error" version_id="1" version_string="1.0.0"><![CDATA[Failures before abandoning sending]]></phrase>
     <phrase title="option_sv_emailqueue_failures_to_error_explain" version_id="1" version_string="1.0.0"><![CDATA[The number of failures before an error is logged, and the email is discarded.
 Set to zero to disable.]]></phrase>

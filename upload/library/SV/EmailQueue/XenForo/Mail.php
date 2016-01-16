@@ -11,7 +11,11 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
 
         if (XenForo_Application::getOptions()->sv_emailqueue_force)
         {
-            return $this->_getMailQueueModel()->insertMailQueue($mailObj);
+            $sv_emailqueue_exclude = XenForo_Application::getOptions()->sv_emailqueue_exclude;
+            if (empty($sv_emailqueue_exclude[$this->_emailTitle]))
+            {
+                return $this->_getMailQueueModel()->insertMailQueue($mailObj);
+            }
         }
 
         if (parent::sendMail($mailObj))
