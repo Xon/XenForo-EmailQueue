@@ -39,7 +39,7 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
   <email_template_modifications/>
   <optiongroups>
     <option option_id="sv_emailqueue_backoff" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
-      <default_value>0</default_value>
+      <default_value>10</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="emailOptions" display_order="1010"/>
@@ -51,7 +51,7 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
       <relation group_id="emailOptions" display_order="1000"/>
     </option>
     <option option_id="sv_emailqueue_exclude" edit_format="callback" data_type="array" can_backup="1" validation_class="SV_EmailQueue_Option_EmailTemplates" validation_method="verifyOption">
-      <default_value>a:0:{}</default_value>
+      <default_value>a:5:{s:21:"two_step_login_backup";b:1;s:20:"two_step_login_email";b:1;s:23:"user_email_confirmation";b:1;s:18:"user_lost_password";b:1;s:24:"user_lost_password_reset";b:1;}</default_value>
       <edit_format_params>SV_EmailQueue_Option_EmailTemplates::renderOption</edit_format_params>
       <sub_options>*</sub_options>
       <relation group_id="emailOptions" display_order="920"/>
