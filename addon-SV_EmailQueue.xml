@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.1.0rc1" version_id="1010000" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Installer" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_EmailQueue" title="Email Queuing Enhancements" version_string="1.1.0" version_id="1010000" url="https://xenforo.com/community/resources/email-queuing-enhancements.3944" install_callback_class="SV_EmailQueue_Installer" install_callback_method="install" uninstall_callback_class="SV_EmailQueue_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -42,9 +42,10 @@ hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}">
     <option option_id="sv_bounceHandling" edit_format="select" data_type="string" can_backup="1">
       <default_value>none</default_value>
       <edit_format_params>none={xen:phrase none}
-all={xen:phrase all}
-soft={xen:phrase sv_disable_soft_bounce}
-hard={xen:phrase sv_disable_hard_bounce}</edit_format_params>
+any_soft={xen:phrase sv_disable_on_any_soft_bounce}
+soft={xen:phrase sv_disable_too_many_soft_bounce}
+hard={xen:phrase sv_disable_hard_bounce}
+all={xen:phrase all}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="emailOptions" display_order="380"/>
     </option>
@@ -110,7 +111,8 @@ Set to zero to disable.]]></phrase>
     <phrase title="option_sv_emailqueue_force" version_id="100001" version_string="1.0.1"><![CDATA[Queue all email]]></phrase>
     <phrase title="option_sv_emailqueue_force_explain" version_id="100001" version_string="1.0.1"><![CDATA[Forces all email to be queued, if disabled only failed email is queued for resending.]]></phrase>
     <phrase title="sv_disable_hard_bounce" version_id="1010000" version_string="1.1.0"><![CDATA[Only on a hard bounce]]></phrase>
-    <phrase title="sv_disable_soft_bounce" version_id="1010000" version_string="1.1.0"><![CDATA[Only on too many soft bounces]]></phrase>
+    <phrase title="sv_disable_on_any_soft_bounce" version_id="1010000" version_string="1.1.0"><![CDATA[Only on any soft bounce]]></phrase>
+    <phrase title="sv_disable_too_many_soft_bounce" version_id="1010000" version_string="1.1.0"><![CDATA[Only on too many soft bounces]]></phrase>
     <phrase title="sv_email_notifications_disabled" version_id="1010000" version_string="1.1.0"><![CDATA[Email notifications disabled due to email bouncing.]]></phrase>
   </phrases>
   <route_prefixes/>

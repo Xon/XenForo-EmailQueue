@@ -12,6 +12,20 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
         return  $ret;
     }
 
+    public function hasSoftBouncedTooMuch($userId)
+    {
+        if (self::$sv_bounceHandling === null)
+        {
+            self::$sv_bounceHandling = XenForo_Application::getOptions()->sv_bounceHandling;
+        }
+
+        if (self::$sv_bounceHandling == 'any_soft')
+        {
+            return true;
+        }
+        return parent::hasSoftBouncedTooMuch($userId);
+    }
+
     static $sv_bounceHandling = null;
 
     public function triggerUserBounceAction($userId)
@@ -23,6 +37,7 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
 
         if ($this->sv_bounceType &&
             (self::$sv_bounceHandling == 'all' ||
+             self::$sv_bounceHandling == 'any_soft' && $this->sv_bounceType == 'soft' ||
              self::$sv_bounceHandling == 'soft' && $this->sv_bounceType == 'soft' ||
              self::$sv_bounceHandling == 'hard' && $this->sv_bounceType == 'hard'))
         {
@@ -31,9 +46,12 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
             {
                 if ($this->canDisableEmail($user))
                 {
-                    $this->disableEmail($userId, $user);
+                    $alert = $this->disableEmail($userId, $user);
                     $user->save();
-                    $this->alertEmailDisabled($userId);
+                    if ($alert)
+                    {
+                        $this->alertEmailDisabled($userId);
+                    }
                 }
             }
             return;
@@ -52,21 +70,33 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
 
     protected function disableEmail($userId, XenForo_DataWriter_User $user)
     {
+        $alert = false;
         if ($user->get('default_watch_state') == 'watch_email')
         {
             $user->set('default_watch_state', 'watch_no_email');
+            $alert = true;
         }
         if ($user->get('email_on_conversation'))
         {
             $user->set('email_on_conversation', 0);
+            $alert = true;
         }
         if ($user->get('sv_email_on_tag'))
         {
             $user->set('sv_email_on_tag', 0);
+            $alert = true;
         }
 
-        $this->_getThreadWatchModel()->setThreadWatchStateForAll($userId, 'watch_no_email');
-        $this->_getForumWatchModel()->setForumWatchStateForAll($userId, 'watch_no_email');
+        if ($this->_getThreadWatchModel()->setThreadWatchStateForAll($userId, 'watch_no_email'))
+        {
+            $alert = true;
+        }
+        if ($this->_getForumWatchModel()->setForumWatchStateForAll($userId, 'watch_no_email'))
+        {
+            $alert = true;
+        }
+
+        return $alert;
     }
 
     protected function alertEmailDisabled($userId, array $extraData = null)
