@@ -18,7 +18,7 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
     {
         if (self::$sv_bounceHandling === null)
         {
-            self::$sv_bounceHandling = XenForo_Application::getOptions()->self::$sv_bounceHandling;
+            self::$sv_bounceHandling = XenForo_Application::getOptions()->sv_bounceHandling;
         }
 
         if ($this->sv_bounceType &&
@@ -54,15 +54,15 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
     {
         if ($user->get('default_watch_state') == 'watch_email')
         {
-            $this->set('default_watch_state', 'watch_no_email');
+            $user->set('default_watch_state', 'watch_no_email');
         }
         if ($user->get('email_on_conversation'))
         {
-            $this->set('email_on_conversation', 0);
+            $user->set('email_on_conversation', 0);
         }
         if ($user->get('sv_email_on_tag'))
         {
-            $this->set('sv_email_on_tag', 0);
+            $user->set('sv_email_on_tag', 0);
         }
 
         $this->_getThreadWatchModel()->setThreadWatchStateForAll($userId, 'watch_no_email');
