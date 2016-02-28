@@ -14,32 +14,40 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
 
     public function hasSoftBouncedTooMuch($userId)
     {
-        if (self::$sv_bounceHandling === null)
+        if (self::$sv_disableEmailOnBounce === null)
         {
-            self::$sv_bounceHandling = XenForo_Application::getOptions()->sv_bounceHandling;
+            self::$sv_disableEmailOnBounce = XenForo_Application::getOptions()->sv_disableEmailOnBounce;
+            if (empty(self::$sv_disableEmailOnBounce))
+            {
+                self::$sv_disableEmailOnBounce = array();
+            }
         }
 
-        if (self::$sv_bounceHandling == 'any_soft')
+        if (!empty(self::$sv_disableEmailOnBounce['any_soft']))
         {
             return true;
         }
         return parent::hasSoftBouncedTooMuch($userId);
     }
 
-    static $sv_bounceHandling = null;
+    static $sv_disableEmailOnBounce = null;
 
     public function triggerUserBounceAction($userId)
     {
-        if (self::$sv_bounceHandling === null)
+        if (self::$sv_disableEmailOnBounce === null)
         {
-            self::$sv_bounceHandling = XenForo_Application::getOptions()->sv_bounceHandling;
+            self::$sv_disableEmailOnBounce = XenForo_Application::getOptions()->sv_disableEmailOnBounce;
+            if (empty(self::$sv_disableEmailOnBounce))
+            {
+                self::$sv_disableEmailOnBounce = array();
+            }
         }
 
-        if ($this->sv_bounceType &&
-            (self::$sv_bounceHandling == 'all' ||
-             self::$sv_bounceHandling == 'any_soft' && $this->sv_bounceType == 'soft' ||
-             self::$sv_bounceHandling == 'soft' && $this->sv_bounceType == 'soft' ||
-             self::$sv_bounceHandling == 'hard' && $this->sv_bounceType == 'hard'))
+        if ($this->sv_bounceType && (
+            (!empty(self::$sv_disableEmailOnBounce['any_soft']) && $this->sv_bounceType == 'soft') ||
+            (!empty(self::$sv_disableEmailOnBounce['soft'])     && $this->sv_bounceType == 'soft') ||
+            (!empty(self::$sv_disableEmailOnBounce['hard'])     && $this->sv_bounceType == 'hard')
+           ))
         {
             $user = XenForo_DataWriter::create('XenForo_DataWriter_User', XenForo_DataWriter::ERROR_SILENT);
             if ($user->setExistingData($userId))
@@ -84,6 +92,11 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
         if ($user->get('sv_email_on_tag'))
         {
             $user->set('sv_email_on_tag', 0);
+            $alert = true;
+        }
+        if ($user->get('fmp_always_email_notify'))
+        {
+            $user->set('fmp_always_email_notify', 0);
             $alert = true;
         }
 
