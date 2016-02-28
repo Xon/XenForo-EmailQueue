@@ -89,6 +89,11 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
             $user->set('email_on_conversation', 0);
             $alert = true;
         }
+        if ($user->get('receive_admin_email'))
+        {
+            $user->set('receive_admin_email', 0);
+            $alert = true;
+        }
         if ($user->get('sv_email_on_tag'))
         {
             $user->set('sv_email_on_tag', 0);
