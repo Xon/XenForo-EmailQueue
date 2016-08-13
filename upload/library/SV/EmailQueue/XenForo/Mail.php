@@ -18,14 +18,22 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
             }
         }
 
-        if (parent::sendMail($mailObj))
+        try
         {
-            return true;
+            if (parent::sendMail($mailObj))
+            {
+                return true;
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
+            $toEmails = implode(', ', $mailObj->getRecipients());
+            XenForo_Error::logException($e, false, "Queued, Email to $toEmails failed: ");
+            return false;
         }
 
         return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
-
-        return false;
     }
 
     protected $_mailQueue = null;
