@@ -30,7 +30,7 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
             $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
             $toEmails = implode(', ', $mailObj->getRecipients());
             XenForo_Error::logException($e, false, "Queued, Email to $toEmails failed: ");
-            return false;
+            return true;
         }
 
         return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
