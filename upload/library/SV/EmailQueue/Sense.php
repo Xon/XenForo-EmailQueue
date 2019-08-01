@@ -1,0 +1,7 @@
+<?php
+
+class XFCP_SV_EmailQueue_XenForo_Model_EmailBounce extends XenForo_Model_EmailBounce {}
+class XFCP_SV_EmailQueue_XenForo_Model_MailQueue extends XenForo_Model_MailQueue {}
+class XFCP_SV_EmailQueue_XenForo_Mail extends XenForo_Mail {}
+class XFCP_SV_EmailQueue_XenForo_Deferred_UserEmail extends XenForo_Deferred_UserEmail {}
+class XFCP_SV_EmailQueue_XenForo_ControllerAdmin_User extends XenForo_ControllerAdmin_User {}

@@ -4,6 +4,7 @@ class SV_EmailQueue_Option_EmailTemplates
 {
     public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
+        /** @var XenForo_Model_EmailTemplate $emailTemplateModel */
         $emailTemplateModel = XenForo_Model::create('XenForo_Model_EmailTemplate');
         $templates = $emailTemplateModel->getAllEffectiveEmailTemplateTitles();
         $options = array();
@@ -40,6 +41,7 @@ class SV_EmailQueue_Option_EmailTemplates
 
     public static function verifyOption(array &$values, XenForo_DataWriter $dw, $fieldName)
     {
+        /** @var XenForo_Model_EmailTemplate $emailTemplateModel */
         $emailTemplateModel = XenForo_Model::create('XenForo_Model_EmailTemplate');
         $templates = $emailTemplateModel->getAllEffectiveEmailTemplateTitles();
 

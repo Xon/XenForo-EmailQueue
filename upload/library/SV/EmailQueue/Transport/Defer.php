@@ -2,6 +2,7 @@
 
 class SV_EmailQueue_Transport_Defer extends Zend_Mail_Transport_Abstract
 {
+    /** @var XenForo_Model_MailQueue */
     protected $_mailQueue = null;
 
     public function send(Zend_Mail $mail)

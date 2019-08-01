@@ -36,6 +36,9 @@ class SV_EmailQueue_XenForo_Mail extends XFCP_SV_EmailQueue_XenForo_Mail
         return $this->_getMailQueueModel()->insertFailedMailQueue($mailObj);
     }
 
+    /**
+     * @var SV_EmailQueue_XenForo_Model_MailQueue
+     */
     protected $_mailQueue = null;
 
     protected function _getMailQueueModel()

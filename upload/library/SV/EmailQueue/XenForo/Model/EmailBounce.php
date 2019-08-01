@@ -49,6 +49,7 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
             (!empty(self::$sv_disableEmailOnBounce['hard'])     && $this->sv_bounceType == 'hard')
            ))
         {
+            /** @var XenForo_DataWriter_User $user */
             $user = XenForo_DataWriter::create('XenForo_DataWriter_User', XenForo_DataWriter::ERROR_SILENT);
             if ($user->setExistingData($userId))
             {
@@ -128,11 +129,17 @@ class SV_EmailQueue_XenForo_Model_EmailBounce extends XFCP_SV_EmailQueue_XenForo
         );
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_ThreadWatch
+     */
     protected function _getThreadWatchModel()
     {
         return $this->getModelFromCache('XenForo_Model_ThreadWatch');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_ForumWatch
+     */
     protected function _getForumWatchModel()
     {
         return $this->getModelFromCache('XenForo_Model_ForumWatch');

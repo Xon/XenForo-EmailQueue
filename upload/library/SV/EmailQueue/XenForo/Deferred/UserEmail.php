@@ -2,6 +2,7 @@
 
 class SV_EmailQueue_XenForo_Deferred_UserEmail extends XFCP_SV_EmailQueue_XenForo_Deferred_UserEmail
 {
+    /** @var SV_EmailQueue_Transport_FailedDefer */
     protected $_deferMailTransport = null;
 
     protected function _getDeferMailTransport(Zend_Mail_Transport_Abstract $transport)

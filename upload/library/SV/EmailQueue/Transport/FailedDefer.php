@@ -2,7 +2,9 @@
 
 class SV_EmailQueue_Transport_FailedDefer extends Zend_Mail_Transport_Abstract
 {
+    /** @var SV_EmailQueue_XenForo_Model_MailQueue|null */
     protected $_mailQueue = null;
+    /** @var Zend_Mail_Transport_Abstract|null  */
     protected $transport = null;
 
     public function setWrappedTransport(Zend_Mail_Transport_Abstract $transport)
